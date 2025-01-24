@@ -41,7 +41,7 @@ The project showcases advanced cloud computing practices, including API manageme
 
 ---
 
-## **Section One: Seting Cloud Infracture**
+## **Section One: Setting up Cloud Infrastructure**
 In this first section we will setup and deploy the application manually without using CI/CD
 Pipline. 
 
@@ -147,19 +147,78 @@ In this second section , we will setup a CI/CD pipline to automate the building 
 ![Architecture of Flast API App](./images/architecture-2.png)
 
 ### **Create a buildspec.yml file**
+- Go to the CodeBuild Console → Create build project
 
 
 ### **Create a CodeBuild Project**
+#### Step 1. Create build project:
+- Go to the CodeBuild Console → Create build project 
+- Name your project (sports-api-project)
+
+#### Step 2. Configure Source
+- Source select source provider to be → GitHub
+- Repository select Repository in my GitHub account
+- Select your repository . (eg https://github.com/kodcapsule/Sports-API)
+
+#### Step 3. Configure Environment
+- Provision model select On-demand
+- Environment image select → Managed image
+- Operating System select → Amazon Linux 2
+- Runtime select → Standard
+- image select the latest image
+- image version leave as default
+- Select additional  configuration
+- Select the checkBox for Priviledge 
+- Take Note of the role name
+
+#### Step 4. Configure Buildspec and create project
+- Buildspec specifications select → Use a buildspec file
+- Leave the rest of the items as default
+- Scrol down and select create build project
+
+#### Step 5. Add permissions for CodeBuild role
 
 ### **Create a CodeDeploy Project**
 
 ### **Create a CodePipline**
+#### Step 1. Create pipline:
+- Go to the CodePipline Console → create pipline 
+- For Create options select Build custom pipline and click next
+- Pipline name, name your pipline (sports-api-pipline)
+- Execution mode   select  Queued
+- Service role  select  New Service role
+- Leave other settings as default and click Next
+
+#### Step 2. Add Source Stage:
+- Souce provider select  Github (via Github App) 
+- Connections select Connect to  Github 
+- Name your connection name (aws-codepipline-connection) and click Connect to Github
+- Github apps select Install new app
+- Select your repository click on Install and click on connect
+- Repository name select your repository 
+- Branch name select main 
+- Leave other settings as default and click Next
+
+
+#### Step 3. Add build stage:
+- Build provider select  AWS CodeBuild
+- Project name select your build project (sports-api-project) 
+- Leave other settings as default and click Next
+
+
 
 ### **Future Improvements**
 - Add caching for frequent API requests using Amazon ElastiCache
 - Add DynamoDB to store user-specific queries and preferences
 - Secure the API Gateway using an API key or IAM-based authentication
 - Add a FrontEnd/UI 
-- Use Terraform to build cloud Infracture Add 
+- Use Terraform to build cloud infrastructure
 
 
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 641638335125.dkr.ecr.us-east-1.amazonaws.com
+
+docker build --platform linux/amd64 -t sports-api .
+
+docker tag sports-api:latest 641638335125.dkr.ecr.us-east-1.amazonaws.com/sports-api:sports-api-latest
+
+docker push 641638335125.dkr.ecr.us-east-1.amazonaws.com/sports-api:sports-api-latest
